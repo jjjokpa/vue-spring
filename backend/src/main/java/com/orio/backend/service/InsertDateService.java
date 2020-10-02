@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
-
 @Service
 @Slf4j
 public class InsertDateService{
@@ -41,6 +40,9 @@ public class InsertDateService{
         FileOutputStream outputStream = null;
         Workbook workbook = null;
 
+        // Start Date String
+        String startDateStr = timeDto.getDay() +" " + timeDto.getStartTime();
+
         // Date String
         String nowDateStr = timeDto.getDay() +" " + timeDto.getTime();
 
@@ -50,6 +52,9 @@ public class InsertDateService{
 
         try {
 
+            // String to Start Date "yyyy/MM/dd hh:mm"
+            Date parsedStartDate = dfIn.parse(startDateStr);
+
             // String to Date "yyyy/MM/dd hh:mm"
             Date parsedDate = dfIn.parse(nowDateStr);
             Calendar cal = Calendar.getInstance();
@@ -57,6 +62,9 @@ public class InsertDateService{
 
             // day : 1~31
             int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
+
+            // Start Date to String to "hh:mm"
+            String startDate = dfOut.format(parsedStartDate);
 
             // Date to String to "hh:mm"
             String outputDate = dfOut.format(parsedDate);
@@ -77,6 +85,15 @@ public class InsertDateService{
                 // read excel find coordinate
                 // start day -> row :9 col:1(B)
                 int rowNumber = dayOfMonth + 9;
+
+                // work start time -> col:E
+                CellAddress scellAddress = new CellAddress("E" + rowNumber);
+                Row srow = sheet.getRow(scellAddress.getRow());         
+                Cell scell = srow.getCell(scellAddress.getColumn());
+                CellStyle sdefaultStyle = scell.getCellStyle();
+
+                scell.setCellValue(startDate);
+                scell.setCellStyle(sdefaultStyle);
 
                 // work end time -> col:F
                 CellAddress cellAddress = new CellAddress("F" + rowNumber);
@@ -155,9 +172,9 @@ public class InsertDateService{
                 }
                 outputStream.close();
             }
-            logger.debug("##work_time : " + outputDate);
-            logger.debug("##deduct_time : " + dTime);
-            logger.debug("##evaluate_time : " + eOutputDate);
+            // logger.debug("##work_time : " + outputDate);
+            // logger.debug("##deduct_time : " + dTime);
+            // logger.debug("##evaluate_time : " + eOutputDate);
             result.setWork_time(outputDate);
             result.setDeduct_time(dTime);
             result.setEvaluate_time(eOutputDate);
