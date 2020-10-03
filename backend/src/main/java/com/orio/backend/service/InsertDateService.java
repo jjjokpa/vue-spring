@@ -124,7 +124,7 @@ public class InsertDateService{
                 mCell.setCellValue(timeDto.getMemo());
                 mCell.setCellStyle(mStyle);
 
-                // write excel
+                // write to excel
                 outputStream = new FileOutputStream(filePath);
                 workbook.write(outputStream);
     
@@ -137,12 +137,16 @@ public class InsertDateService{
                 
                 Date eDate = eCell.getDateCellValue();
                 eOutputDate = dfOut.format(eDate);
-    
+                
                 // check minute
                 int eMinute = Integer.parseInt(eOutputDate.substring(3,5));
-
+                
                 // break at divided by 15
                 if (eMinute%15==0){
+
+                    // write  evaluate value to excel
+                    outputStream = new FileOutputStream(filePath);
+                    workbook.write(outputStream);
 
                     // close excel
                     workbook.close();
