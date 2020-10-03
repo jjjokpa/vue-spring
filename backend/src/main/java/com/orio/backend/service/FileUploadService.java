@@ -3,7 +3,10 @@ package com.orio.backend.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,7 @@ public class FileUploadService{
             File file = new File(dir + mfile.getOriginalFilename());
             os = new FileOutputStream(file);
             os.write(mfile.getBytes());
+            os.close();
 
         } catch (Exception e) {
             throw new RuntimeException("File save failed"+ e.getMessage());
